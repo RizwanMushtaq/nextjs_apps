@@ -2,29 +2,42 @@
     "name": "manufacturing_parts",
     "version": "0.1.0",
     "private": true,
+    "type": "module",
     "scripts": {
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
         "lint": "eslint .",
         "format": "prettier . --write && eslint . --fix",
-        "format:check": "prettier . --check"
+        "format:check": "prettier . --check",
+        "migrate:deploy": "prisma migrate deploy",
+        "migrate:dev": "prisma migrate dev --name {{migration_name}}",
+        "migrate:reset": "prisma migrate reset",
+        "migrate:status": "prisma migrate status",
+        "db:generate": "prisma generate",
+        "db:studio": "prisma studio",
+        "db:seed": "npx tsx prisma/seed.ts"
     },
     "dependencies": {
+        "@prisma/adapter-better-sqlite3": "^7.8.0",
+        "@prisma/client": "^7.8.0",
         "next": "16.2.6",
         "react": "19.2.4",
         "react-dom": "19.2.4"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4",
-        "@types/node": "^20",
+        "@types/better-sqlite3": "^7.6.13",
+        "@types/node": "^20.19.41",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+        "dotenv": "^17.4.2",
         "eslint": "^9",
         "eslint-config-next": "16.2.6",
         "eslint-config-prettier": "^10.1.8",
         "prettier": "^3.8.3",
+        "prisma": "^7.8.0",
         "tailwindcss": "^4",
-        "typescript": "^5"
+        "typescript": "^5.9.3"
     }
 }

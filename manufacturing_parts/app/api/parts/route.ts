@@ -14,16 +14,12 @@ export async function POST(request: Request) {
         );
     }
 
-    const { name, sku, quantity } = body;
+    const { name, description } = body;
 
-    if (
-        typeof name !== 'string' ||
-        typeof sku !== 'string' ||
-        typeof quantity !== 'number'
-    ) {
+    if (typeof name !== 'string' || typeof description !== 'string') {
         return NextResponse.json(
             {
-                error: 'name (string), sku (string), and quantity (number) are required',
+                error: 'name (string) and description (string) are required',
             },
             { status: 400 }
         );
