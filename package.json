@@ -11,7 +11,7 @@
         "format": "prettier . --write && eslint . --fix",
         "format:check": "prettier . --check",
         "migrate:deploy": "prisma migrate deploy",
-        "migrate:dev": "prisma migrate dev --name {{migration_name}}",
+        "migrate:dev": "prisma migrate dev",
         "migrate:reset": "prisma migrate reset",
         "migrate:status": "prisma migrate status",
         "db:generate": "prisma generate",

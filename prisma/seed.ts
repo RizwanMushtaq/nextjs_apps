@@ -15,23 +15,25 @@ const adapter = new PrismaBetterSqlite3({
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-    const part1 = await prisma.part.upsert({
-        where: { id: 1 },
+    const user1 = await prisma.user.upsert({
+        where: { email: 'user1@example.com' },
         update: {},
         create: {
-            name: 'Part 1',
-            description: 'Description for Part 1',
+            name: 'User 1',
+            email: 'user1@example.com',
+            password: 'password1',
         },
     });
-    const part2 = await prisma.part.upsert({
-        where: { id: 2 },
+    const user2 = await prisma.user.upsert({
+        where: { email: 'user2@example.com' },
         update: {},
         create: {
-            name: 'Part 2',
-            description: 'Description for Part 2',
+            name: 'User 2',
+            email: 'user2@example.com',
+            password: 'password2',
         },
     });
-    console.log({ part1, part2 });
+    console.log({ user1, user2 });
 }
 
 main()
