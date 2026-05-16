@@ -1,33 +1,54 @@
-import { NextResponse } from 'next/server';
+import { apiSuccessResponse } from '@/backend/api_responses/apiResponses';
+import { StatusCode, ValidationError } from '@/backend/exceptions/apiError';
+import { globalExceptionHandler } from '@/backend/exceptions/globalExceptionHandler';
+import { partsServiceProvider } from '@/backend/parts/partsServiceProvider';
 
 type RouteContext = {
     params: Promise<{ id: string }>;
 };
 
 export async function GET(_request: Request, { params }: RouteContext) {
-    const { id } = await params;
-
-    return NextResponse.json({ message: `Part ${id} found` });
+    try {
+        const { id } = await params;
+        const numericId = Number(id);
+        if (Number.isNaN(numericId)) {
+            throw new ValidationError('Invalid part ID').toResponse();
+        }
+        const part = await partsServiceProvider.getPartById(numericId);
+        return apiSuccessResponse(part);
+    } catch (error: unknown) {
+        return globalExceptionHandler(error);
+    }
 }
 
 export async function PUT(request: Request, { params }: RouteContext) {
     const { id } = await params;
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+        throw new ValidationError('Invalid part ID').toResponse();
+    }
 
     let body;
     try {
         body = await request.json();
-    } catch {
-        return NextResponse.json(
-            { error: 'Invalid JSON body' },
-            { status: 400 }
-        );
+        const part = await partsServiceProvider.updatePart(numericId, body);
+        return apiSuccessResponse(part);
+    } catch (error: unknown) {
+        return globalExceptionHandler(error);
     }
-
-    return NextResponse.json({ message: `Part ${id} updated`, body });
 }
 
 export async function DELETE(_request: Request, { params }: RouteContext) {
     const { id } = await params;
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+        throw new ValidationError('Invalid part ID').toResponse();
+    }
 
-    return NextResponse.json({ message: `Part ${id} deleted`, status: 204 });
+    try {
+        await partsServiceProvider.deletePart(numericId);
+        return apiSuccessResponse(null, StatusCode.NO_CONTENT);
+    } catch (error: unknown) {
+        return globalExceptionHandler(error);
+    }
 }

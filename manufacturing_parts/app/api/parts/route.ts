@@ -1,32 +1,32 @@
-import { NextResponse } from 'next/server';
+import { apiSuccessResponse } from '@/backend/api_responses/apiResponses';
+import { StatusCode, ValidationError } from '@/backend/exceptions/apiError';
+import { globalExceptionHandler } from '@/backend/exceptions/globalExceptionHandler';
+import { partsServiceProvider } from '@/backend/parts/partsServiceProvider';
+
 export async function GET() {
-    return NextResponse.json({ message: 'Hello from the parts API!' });
+    try {
+        const parts = await partsServiceProvider.getAllParts();
+        return apiSuccessResponse(parts);
+    } catch (error: unknown) {
+        return globalExceptionHandler(error);
+    }
 }
 
 export async function POST(request: Request) {
     let body;
     try {
         body = await request.json();
-    } catch {
-        return NextResponse.json(
-            { error: 'Invalid JSON body' },
-            { status: 400 }
-        );
+        const { name, description } = body;
+        if (typeof name !== 'string' || typeof description !== 'string') {
+            throw new ValidationError('Invalid input data');
+        }
+
+        const newPart = await partsServiceProvider.createPart({
+            name,
+            description,
+        });
+        return apiSuccessResponse(newPart, StatusCode.CREATED);
+    } catch (error: unknown) {
+        return globalExceptionHandler(error);
     }
-
-    const { name, description } = body;
-
-    if (typeof name !== 'string' || typeof description !== 'string') {
-        return NextResponse.json(
-            {
-                error: 'name (string) and description (string) are required',
-            },
-            { status: 400 }
-        );
-    }
-
-    return NextResponse.json(
-        { message: 'Part created successfully' },
-        { status: 201 }
-    );
 }
