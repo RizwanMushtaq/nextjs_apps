@@ -1,6 +1,7 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from '../generated/prisma/client';
 import 'dotenv/config';
+import bcrypt from 'bcrypt';
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -21,7 +22,7 @@ async function main() {
         create: {
             name: 'User 1',
             email: 'user1@example.com',
-            password: 'password1',
+            password: await bcrypt.hash('password1', 10),
         },
     });
     const user2 = await prisma.user.upsert({
@@ -30,7 +31,7 @@ async function main() {
         create: {
             name: 'User 2',
             email: 'user2@example.com',
-            password: 'password2',
+            password: await bcrypt.hash('password2', 10),
         },
     });
     console.log({ user1, user2 });
