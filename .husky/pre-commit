@@ -1,1 +1,3 @@
 npm run running-precommit-hooks
+npm run format:check
+npm run lint
