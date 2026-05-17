@@ -10,6 +10,11 @@ export const apiSuccessResponse: <T>(
     props: apiSuccessResponseProps<T>
 ) => NextResponse = <T>(props: apiSuccessResponseProps<T>) => {
     const { data, status = StatusCode.SUCCESS } = props;
+
+    if (status === StatusCode.NO_CONTENT) {
+        return new NextResponse(null, { status });
+    }
+
     const body = {
         success: true,
         data,
