@@ -35,6 +35,26 @@ async function main() {
         },
     });
     console.log({ user1, user2 });
+
+    const part1 = await prisma.part.upsert({
+        where: { part_code: 'PART001' },
+        update: {},
+        create: {
+            part_code: 'PART001',
+            name: 'Part 1',
+            description: 'Description for Part 1',
+        },
+    });
+    const part2 = await prisma.part.upsert({
+        where: { part_code: 'PART002' },
+        update: {},
+        create: {
+            part_code: 'PART002',
+            name: 'Part 2',
+            description: 'Description for Part 2',
+        },
+    });
+    console.log({ part1, part2 });
 }
 
 main()
