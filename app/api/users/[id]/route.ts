@@ -1,28 +1,50 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { apiSuccessResponse } from '@/backend/api_responses/apiResponses';
+import { globalExceptionHandler } from '@/backend/exceptions/globalExceptionHandler';
+import { validateUpdateUserDto } from '@/backend/user/dtos/userDtos';
+import { userServiceProvider } from '@/backend/user/userServicePrivider';
+import { validateIdParam } from '@/shared/utils/zodUtils';
+import { NextRequest } from 'next/server';
+import { RouteContext } from '@/shared/utils/routeUtils';
 
-export async function GET(
-    req: NextRequest,
-    { params }: { params: { id: string } }
-) {
-    return NextResponse.json({
-        message: `GET user ${params.id} - dummy response`,
-    });
+export async function GET(req: NextRequest, { params }: RouteContext) {
+    try {
+        const { id } = await params;
+        const validatedId = validateIdParam(id);
+        const user = await userServiceProvider.getUserById(validatedId);
+        return apiSuccessResponse({ data: user });
+    } catch (error) {
+        return globalExceptionHandler(error);
+    }
 }
 
-export async function PUT(
-    req: NextRequest,
-    { params }: { params: { id: string } }
-) {
-    return NextResponse.json({
-        message: `PUT update user ${params.id} - dummy response`,
-    });
+export async function PUT(req: NextRequest, { params }: RouteContext) {
+    try {
+        const { id } = await params;
+        const validatedId = validateIdParam(id);
+        const requestBody = await req.json();
+        const parseResult = validateUpdateUserDto(requestBody);
+        const updateUserInput = {
+            name: parseResult.name,
+            email: parseResult.email,
+            password: parseResult.password,
+        };
+        const updatedUser = await userServiceProvider.updateUser(
+            validatedId,
+            updateUserInput
+        );
+        return apiSuccessResponse({ data: updatedUser });
+    } catch (error) {
+        return globalExceptionHandler(error);
+    }
 }
 
-export async function DELETE(
-    req: NextRequest,
-    { params }: { params: { id: string } }
-) {
-    return NextResponse.json({
-        message: `DELETE user ${params.id} - dummy response`,
-    });
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
+    try {
+        const { id } = await params;
+        const validatedId = validateIdParam(id);
+        const deletedUser = await userServiceProvider.deleteUser(validatedId);
+        return apiSuccessResponse({ data: deletedUser });
+    } catch (error) {
+        return globalExceptionHandler(error);
+    }
 }

@@ -87,6 +87,15 @@ export class ValidationError extends ApiError {
     }
 }
 
+export class DatabaseError extends ApiError {
+    public readonly statusCode: number;
+    constructor(message: string) {
+        super(message);
+        this.name = 'DatabaseError';
+        this.statusCode = StatusCode.INTERNAL_SERVER_ERROR;
+    }
+}
+
 export class UnknownError extends ApiError {
     public readonly statusCode: number;
     constructor(message: string) {

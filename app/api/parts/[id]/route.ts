@@ -2,10 +2,7 @@ import { apiSuccessResponse } from '@/backend/api_responses/apiResponses';
 import { StatusCode, ValidationError } from '@/backend/exceptions/apiError';
 import { globalExceptionHandler } from '@/backend/exceptions/globalExceptionHandler';
 import { partsServiceProvider } from '@/backend/parts/partsServiceProvider';
-
-type RouteContext = {
-    params: Promise<{ id: string }>;
-};
+import { RouteContext } from '@/shared/utils/routeUtils';
 
 export async function GET(_request: Request, { params }: RouteContext) {
     try {
@@ -15,7 +12,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
             throw new ValidationError('Invalid part ID').toResponse();
         }
         const part = await partsServiceProvider.getPartById(numericId);
-        return apiSuccessResponse(part);
+        return apiSuccessResponse({ data: part });
     } catch (error: unknown) {
         return globalExceptionHandler(error);
     }
@@ -32,7 +29,7 @@ export async function PUT(request: Request, { params }: RouteContext) {
     try {
         body = await request.json();
         const part = await partsServiceProvider.updatePart(numericId, body);
-        return apiSuccessResponse(part);
+        return apiSuccessResponse({ data: part });
     } catch (error: unknown) {
         return globalExceptionHandler(error);
     }
@@ -47,7 +44,10 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
 
     try {
         await partsServiceProvider.deletePart(numericId);
-        return apiSuccessResponse(null, StatusCode.NO_CONTENT);
+        return apiSuccessResponse({
+            data: null,
+            status: StatusCode.NO_CONTENT,
+        });
     } catch (error: unknown) {
         return globalExceptionHandler(error);
     }
