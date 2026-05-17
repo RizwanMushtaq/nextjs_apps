@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server';
 import { StatusCode } from '../exceptions/apiError';
 
-export const apiSuccessResponse = <T>(
-    data: T,
-    status: StatusCode = StatusCode.SUCCESS
-) => {
+type apiSuccessResponseProps<T> = {
+    data: T;
+    status?: StatusCode;
+};
+
+export const apiSuccessResponse: <T>(
+    props: apiSuccessResponseProps<T>
+) => NextResponse = <T>(props: apiSuccessResponseProps<T>) => {
+    const { data, status = StatusCode.SUCCESS } = props;
     const body = {
         success: true,
         data,
