@@ -16,7 +16,8 @@
         "migrate:status": "prisma migrate status",
         "db:generate": "prisma generate",
         "db:studio": "prisma studio",
-        "db:seed": "npx tsx prisma/seed.ts"
+        "db:seed": "npx tsx prisma/seed.ts",
+        "running-precommit-hooks": "echo 'running precommit hooks'"
     },
     "dependencies": {
         "@prisma/adapter-better-sqlite3": "^7.8.0",
@@ -29,6 +30,8 @@
         "zod": "^4.4.3"
     },
     "devDependencies": {
+        "@commitlint/cli": "^21.0.1",
+        "@commitlint/config-conventional": "^21.0.1",
         "@tailwindcss/postcss": "^4",
         "@types/bcrypt": "^6.0.0",
         "@types/better-sqlite3": "^7.6.13",
@@ -39,6 +42,7 @@
         "eslint": "^9",
         "eslint-config-next": "16.2.6",
         "eslint-config-prettier": "^10.1.8",
+        "husky": "^9.1.7",
         "prettier": "^3.8.3",
         "prisma": "^7.8.0",
         "tailwindcss": "^4",
