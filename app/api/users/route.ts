@@ -18,15 +18,16 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const requestBody = await req.json();
-        const parseResult = validateCreateUserDto(requestBody);
+        const validatedBody = validateCreateUserDto(requestBody);
         const crreateUserInput: CreateUserInput = {
-            name: parseResult.name,
-            email: parseResult.email,
-            password: parseResult.password,
+            name: validatedBody.name,
+            email: validatedBody.email,
+            password: validatedBody.password,
         };
-        const user = await userServiceProvider.createUser(crreateUserInput);
+        const createdUser =
+            await userServiceProvider.createUser(crreateUserInput);
         return apiSuccessResponse({
-            data: user,
+            data: createdUser,
             status: StatusCode.CREATED,
         });
     } catch (error) {

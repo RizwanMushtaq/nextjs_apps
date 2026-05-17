@@ -1,31 +1,34 @@
 import { apiSuccessResponse } from '@/backend/api_responses/apiResponses';
-import { StatusCode, ValidationError } from '@/backend/exceptions/apiError';
+import { StatusCode } from '@/backend/exceptions/apiError';
 import { globalExceptionHandler } from '@/backend/exceptions/globalExceptionHandler';
+import { CreatePartInput } from '@/backend/part/domain/partsDomain';
+import { validateCreatePartDto } from '@/backend/part/dtos/partsDtos';
 import { partsServiceProvider } from '@/backend/part/partsServiceProvider';
 
 export async function GET() {
     try {
         const parts = await partsServiceProvider.getAllParts();
-        return apiSuccessResponse(parts);
+        return apiSuccessResponse({ data: parts });
     } catch (error: unknown) {
         return globalExceptionHandler(error);
     }
 }
 
-export async function POST(request: Request) {
-    let body;
+export async function POST(req: Request) {
     try {
-        body = await request.json();
-        const { name, description } = body;
-        if (typeof name !== 'string' || typeof description !== 'string') {
-            throw new ValidationError('Invalid input data');
-        }
-
-        const newPart = await partsServiceProvider.createPart({
-            name,
-            description,
+        const requestBody = await req.json();
+        const validatedBody = validateCreatePartDto(requestBody);
+        const createPartInput: CreatePartInput = {
+            part_code: validatedBody.part_code,
+            name: validatedBody.name,
+            description: validatedBody.description,
+        };
+        const createdPart =
+            await partsServiceProvider.createPart(createPartInput);
+        return apiSuccessResponse({
+            data: createdPart,
+            status: StatusCode.CREATED,
         });
-        return apiSuccessResponse(newPart, StatusCode.CREATED);
     } catch (error: unknown) {
         return globalExceptionHandler(error);
     }

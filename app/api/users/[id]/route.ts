@@ -5,6 +5,7 @@ import { userServiceProvider } from '@/backend/user/userServicePrivider';
 import { validateIdParam } from '@/shared/utils/zodUtils';
 import { NextRequest } from 'next/server';
 import { RouteContext } from '@/shared/utils/routeUtils';
+import { StatusCode } from '@/backend/exceptions/apiError';
 
 export async function GET(req: NextRequest, { params }: RouteContext) {
     try {
@@ -22,11 +23,11 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
         const { id } = await params;
         const validatedId = validateIdParam(id);
         const requestBody = await req.json();
-        const parseResult = validateUpdateUserDto(requestBody);
+        const validatedBody = validateUpdateUserDto(requestBody);
         const updateUserInput = {
-            name: parseResult.name,
-            email: parseResult.email,
-            password: parseResult.password,
+            name: validatedBody.name,
+            email: validatedBody.email,
+            password: validatedBody.password,
         };
         const updatedUser = await userServiceProvider.updateUser(
             validatedId,
@@ -42,8 +43,11 @@ export async function DELETE(req: NextRequest, { params }: RouteContext) {
     try {
         const { id } = await params;
         const validatedId = validateIdParam(id);
-        const deletedUser = await userServiceProvider.deleteUser(validatedId);
-        return apiSuccessResponse({ data: deletedUser });
+        await userServiceProvider.deleteUser(validatedId);
+        return apiSuccessResponse({
+            data: null,
+            status: StatusCode.NO_CONTENT,
+        });
     } catch (error) {
         return globalExceptionHandler(error);
     }
