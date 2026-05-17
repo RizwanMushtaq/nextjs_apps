@@ -1,5 +1,6 @@
-export type Part = {
-    id: number;
+export type PartDomainModel = {
+    id: string;
+    part_code: string;
     name: string;
     description?: string;
     createdAt: string;
@@ -7,6 +8,7 @@ export type Part = {
 };
 
 export type CreatePartInput = {
+    part_code: string;
     name: string;
     description?: string;
 };

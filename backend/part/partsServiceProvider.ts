@@ -7,9 +7,13 @@ class PartsServiceProvider {
     private static partsService: PartsService;
 
     public static getPartsService(): PartsService {
-        const prisma = PrismaSqliteService.getDBClient();
-        const repository = new PrismaPartsRepository(prisma);
-        PartsServiceProvider.partsService = new PartsServiceImpl(repository);
+        if (!PartsServiceProvider.partsService) {
+            const prisma = PrismaSqliteService.getDBClient();
+            const repository = new PrismaPartsRepository(prisma);
+            PartsServiceProvider.partsService = new PartsServiceImpl(
+                repository
+            );
+        }
         return PartsServiceProvider.partsService;
     }
 }

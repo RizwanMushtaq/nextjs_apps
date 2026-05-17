@@ -1,5 +1,9 @@
 import { PrismaClient } from '@/generated/prisma/client';
-import { CreatePartInput, Part, UpdatePartInput } from '../domain/partsDomain';
+import {
+    CreatePartInput,
+    PartDomainModel,
+    UpdatePartInput,
+} from '../domain/partsDomain';
 
 export class PrismaPartsRepository {
     private prismaClient: PrismaClient;
@@ -8,10 +12,11 @@ export class PrismaPartsRepository {
         this.prismaClient = prismaSqliteClient;
     }
 
-    async getAllParts(): Promise<Part[]> {
+    async getAllParts(): Promise<PartDomainModel[]> {
         const parts = await this.prismaClient.part.findMany();
         return parts.map((part) => ({
             id: part.id,
+            part_code: part.part_code,
             name: part.name,
             description: part.description ?? undefined,
             createdAt: part.createdAt.toISOString(),
@@ -19,15 +24,13 @@ export class PrismaPartsRepository {
         }));
     }
 
-    async getPartById(id: number): Promise<Part | null> {
-        const part = await this.prismaClient.part.findUnique({
+    async getPartById(id: string): Promise<PartDomainModel> {
+        const part = await this.prismaClient.part.findUniqueOrThrow({
             where: { id },
         });
-        if (!part) {
-            return null;
-        }
         return {
             id: part.id,
+            part_code: part.part_code,
             name: part.name,
             description: part.description ?? undefined,
             createdAt: part.createdAt.toISOString(),
@@ -35,12 +38,15 @@ export class PrismaPartsRepository {
         };
     }
 
-    async createPart(createPartInput: CreatePartInput): Promise<Part> {
+    async createPart(
+        createPartInput: CreatePartInput
+    ): Promise<PartDomainModel> {
         const part = await this.prismaClient.part.create({
             data: createPartInput,
         });
         return {
             id: part.id,
+            part_code: part.part_code,
             name: part.name,
             description: part.description ?? undefined,
             createdAt: part.createdAt.toISOString(),
@@ -49,15 +55,16 @@ export class PrismaPartsRepository {
     }
 
     async updatePart(
-        id: number,
+        id: string,
         updatePartInput: UpdatePartInput
-    ): Promise<Part> {
+    ): Promise<PartDomainModel> {
         const part = await this.prismaClient.part.update({
             where: { id },
             data: updatePartInput,
         });
         return {
             id: part.id,
+            part_code: part.part_code,
             name: part.name,
             description: part.description ?? undefined,
             createdAt: part.createdAt.toISOString(),
@@ -65,7 +72,7 @@ export class PrismaPartsRepository {
         };
     }
 
-    async deletePart(id: number): Promise<void> {
+    async deletePart(id: string): Promise<void> {
         await this.prismaClient.part.delete({
             where: { id },
         });

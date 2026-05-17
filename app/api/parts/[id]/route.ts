@@ -1,7 +1,7 @@
 import { apiSuccessResponse } from '@/backend/api_responses/apiResponses';
 import { StatusCode, ValidationError } from '@/backend/exceptions/apiError';
 import { globalExceptionHandler } from '@/backend/exceptions/globalExceptionHandler';
-import { partsServiceProvider } from '@/backend/parts/partsServiceProvider';
+import { partsServiceProvider } from '@/backend/part/partsServiceProvider';
 import { RouteContext } from '@/shared/utils/routeUtils';
 
 export async function GET(_request: Request, { params }: RouteContext) {
