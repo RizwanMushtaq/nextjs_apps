@@ -12,3 +12,15 @@ export const validateIdParam = (params: IdParam) => {
     }
     return result.data;
 };
+
+export const NumberDtoSchema = z.string().transform((value, ctx) => {
+    const parsed = parseInt(value, 10);
+    if (isNaN(parsed) || parsed < 1) {
+        ctx.addIssue({
+            code: 'custom',
+            message: 'Page number must be a positive integer',
+        });
+        return z.NEVER;
+    }
+    return parsed;
+});

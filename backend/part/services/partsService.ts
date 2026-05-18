@@ -1,18 +1,17 @@
-import {
-    CreatePartInput,
-    PartDomainModel,
-    UpdatePartInput,
-} from '../domain/partsDomain';
+import { NodePart } from '../domain/NodePart';
 
 export abstract class PartsService {
-    abstract getAllParts(): Promise<PartDomainModel[]>;
-    abstract getPartById(id: string): Promise<PartDomainModel>;
-    abstract createPart(
-        createPartInput: CreatePartInput
-    ): Promise<PartDomainModel>;
-    abstract updatePart(
-        id: string,
-        updatePartInput: UpdatePartInput
-    ): Promise<PartDomainModel>;
-    abstract deletePart(id: string): Promise<void>;
+    abstract getAllParts(
+        pageNumber: number,
+        pageSize: number
+    ): Promise<NodePart[]>;
+    // abstract getPartById(id: string): Promise<PartDomainModel>;
+    // abstract createPart(
+    //     createPartInput: CreatePartInput
+    // ): Promise<PartDomainModel>;
+    // abstract updatePart(
+    //     id: string,
+    //     updatePartInput: UpdatePartInput
+    // ): Promise<PartDomainModel>;
+    // abstract deletePart(id: string): Promise<void>;
 }

@@ -9,6 +9,7 @@ import {
 import logger from '@/shared/utils/logger';
 
 export const globalExceptionHandler = (errorInstance: unknown) => {
+    console.error('Error caught in globalExceptionHandler:', errorInstance);
     if (
         errorInstance instanceof NotFoundError ||
         errorInstance instanceof BadRequestError ||
