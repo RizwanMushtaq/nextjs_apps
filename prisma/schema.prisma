@@ -22,10 +22,14 @@ model User {
 }
 
 model Part {
-  id          String   @id @default(uuid())
-  part_code  String   @unique
-  name        String
-  description String?
+  id          String   @id @unique
+  parentId    String?
+  description String
+  quantityPerParent Int
+  materialCost Float
+  manufacturingCost Float
+  directCost Float
+  subTreeCost Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
